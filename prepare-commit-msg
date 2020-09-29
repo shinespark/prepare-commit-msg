@@ -1,0 +1,57 @@
+#!/bin/bash
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+# 挙動を知りたいので当面出力
+#echo "\$COMMIT_SOURCE: $COMMIT_SOURCE"
+#echo "\$SHA1: $SHA1"
+
+# ok: commit, amend,
+# not: commit --fixup=@,
+function validate_commit_source() {
+  if [[ $COMMIT_SOURCE != "commit" ]]; then
+    exit
+  fi
+}
+
+function validate_sha1() {
+  if [[ $SHA1 =~ master|main ]];  then
+    exit
+  fi
+}
+
+function prevent_common_branch() {
+  if [[ $1 =~ master|main|HEAD ]] || [[ -z $1 ]];  then
+    exit
+  fi
+}
+
+
+function set_tag() {
+  CURRENT_BRANCH=$(git rev-parse --abbrev-ref @)
+  BASENAME=${CURRENT_BRANCH##*/}
+  if [[ $BASENAME =~ ^CU-[0-9A-Za-z]+ ]]; then # consider ClickUp ID
+    TAG="[${BASH_REMATCH[0]}]"
+  else
+    TICKET_ID=${BASENAME##[-|_]*}
+    prevent_common_branch $TICKET_ID
+    TAG="[#$TICKET_ID]"
+  fi
+}
+
+# amend時の重複や、commit --fixup=@時のfixup!の前にタグが混入するのを抑止する
+function prevent_unnecessary_tag() {
+  HEAD_COMMIT_MSG_FILE=$(head -n 1 $COMMIT_MSG_FILE)
+  PREVIOUS_TAG=${HEAD_COMMIT_MSG_FILE%% *}
+  if [[ "$PREVIOUS_TAG" = "$TAG" ]] || [[ "$PREVIOUS_TAG" = "fixup!" ]]; then
+    exit
+  fi
+}
+
+# main
+# validate_commit_source
+# validate_sha1
+set_tag
+prevent_unnecessary_tag
+echo "$TAG $(cat $COMMIT_MSG_FILE)" > $COMMIT_MSG_FILE
