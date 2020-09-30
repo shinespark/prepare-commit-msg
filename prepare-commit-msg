@@ -7,20 +7,6 @@ SHA1=$3
 #echo "\$COMMIT_SOURCE: $COMMIT_SOURCE"
 #echo "\$SHA1: $SHA1"
 
-# ok: commit, amend,
-# not: commit --fixup=@,
-function validate_commit_source() {
-  if [[ $COMMIT_SOURCE != "commit" ]]; then
-    exit
-  fi
-}
-
-function validate_sha1() {
-  if [[ $SHA1 =~ master|main ]];  then
-    exit
-  fi
-}
-
 function prevent_common_branch() {
   if [[ $1 =~ master|main|HEAD ]] || [[ -z $1 ]];  then
     exit
@@ -50,8 +36,6 @@ function prevent_unnecessary_tag() {
 }
 
 # main
-# validate_commit_source
-# validate_sha1
 set_tag
 prevent_unnecessary_tag
 echo "$TAG $(cat $COMMIT_MSG_FILE)" > $COMMIT_MSG_FILE
