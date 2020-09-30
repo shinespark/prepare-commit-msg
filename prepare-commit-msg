@@ -1,18 +1,11 @@
 #!/bin/bash
 COMMIT_MSG_FILE=$1
-COMMIT_SOURCE=$2
-SHA1=$3
-
-# 挙動を知りたいので当面出力
-#echo "\$COMMIT_SOURCE: $COMMIT_SOURCE"
-#echo "\$SHA1: $SHA1"
 
 function prevent_common_branch() {
   if [[ $1 =~ master|main|HEAD ]] || [[ -z $1 ]];  then
     exit
   fi
 }
-
 
 function set_tag() {
   CURRENT_BRANCH=$(git rev-parse --abbrev-ref @)
