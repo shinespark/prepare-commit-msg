@@ -1,5 +1,14 @@
 # prepare-commit-msg
 
+Auto prefix tag hook.
+
+```
+git switch -c feature/abcdef-awesome-feature
+git commit -m "awesome feature"
+git log -1
+[#abcdef] awesome feature
+```
+
 ## copy_prepare-commit-msg_recursively.sh
 
 ```
