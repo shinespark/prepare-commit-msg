@@ -6,7 +6,7 @@ if [ $# -ne 1 ]; then
 fi
 
 dir="$1"
-repos=`ls -p $dir | grep /`
+repos=`'ls' -p $dir | grep /`
 
 for repo in ${repos[@]}; do
   to_file_path=${dir}/${repo}.git/hooks/prepare-commit-msg
