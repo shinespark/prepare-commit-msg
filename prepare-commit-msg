@@ -10,7 +10,7 @@ function prevent_common_branch() {
 function set_tag() {
   CURRENT_BRANCH=$(git rev-parse --abbrev-ref @)
   BASENAME=${CURRENT_BRANCH##*/}
-  if [[ $BASENAME =~ ^CU-[0-9A-Za-z]+ ]]; then # consider ClickUp ID
+  if [[ $BASENAME =~ ^#[0-9A-Za-z]+ ]]; then # consider ClickUp ID
     TAG="[${BASH_REMATCH[0]}]"
   else
     TICKET_ID=${BASENAME##[-|_]*}
