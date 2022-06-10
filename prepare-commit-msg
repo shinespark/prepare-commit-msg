@@ -15,7 +15,7 @@ function set_tag() {
   else
     TICKET_ID=${BASENAME##[-|_]*}
     prevent_common_branch $TICKET_ID
-    TAG="[#$TICKET_ID]"
+    TAG="[$TICKET_ID]"
   fi
 }
 
